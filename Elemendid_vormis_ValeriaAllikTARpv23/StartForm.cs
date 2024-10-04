@@ -2,16 +2,19 @@
 {
     public partial class StartForm : Form
     {
-        List<string> elemendid = new List<string> { "Nupp","Silt","Pilt", "Märkruut" };
+        List<string> elemendid = new List<string> { "Nupp", "Silt", "Pilt", "Märkruut", "Raadionupp", "Raadionupp1", "Tekstikast" };
+        List<string> rbtn_list = new List<string> { "Üks", "Kaks", "Kolm" };
         TreeView tree;
         Button btn;
         Label lbl;
         PictureBox pbox, pbox2;
         CheckBox chk1, chk2;
+        RadioButton rbtn, rbtn1, rbtn2, rbtn3;
+        TextBox txt;
         public StartForm()
         {
-            this.Height = 500;
-            this.Width = 700;
+            this.Height = 600;
+            this.Width = 800;
             this.Text = "Vorm elementidega";
             tree = new TreeView();
             tree.Dock = DockStyle.Left;
@@ -41,6 +44,7 @@
             lbl.MouseHover += Lbl_MouseHover;
             lbl.MouseLeave += Lbl_MouseLeave;
 
+            //pbox-picturebox
             pbox= new PictureBox();
             pbox.Size = new Size(80, 80);
             pbox.Location = new Point(150, btn.Height+lbl.Height+5);
@@ -87,6 +91,7 @@
             }
         }
 
+
         private void Tree_AfterSelect(object? sender, TreeViewEventArgs e)
         {
             if (e.Node.Text == "Nupp")
@@ -107,7 +112,7 @@
                 chk1.Checked = false;
                 chk1.Text = e.Node.Text;
                 chk1.Size = new Size(chk1.Text.Length*10, chk1.Size.Height);
-                chk1.Location = new Point(150, btn.Height + lbl.Height+pbox.Height+10);
+                chk1.Location = new Point(150, btn.Height + lbl.Height + pbox.Height + 10);
                 chk1.CheckedChanged += new EventHandler(Chk1_CheckedChanged);
 
                 chk2 = new CheckBox();
@@ -135,6 +140,85 @@
                 Controls.Add(chk1);
                 Controls.Add(chk2);
             }
+            else if (e.Node.Text == "Raadionupp")
+            {
+                rbtn1=new RadioButton();
+                rbtn1.Checked = false;
+                rbtn1.Text = "Bisque";
+                rbtn1.Location = new Point(150, 420);
+                rbtn1.CheckedChanged += Rbtn1_CheckedChanged;
+
+                rbtn2 = new RadioButton();
+                rbtn2.Checked = false;
+                rbtn2.Text = "Teal";
+                rbtn2.Location = new Point(150, 440);
+                rbtn2.CheckedChanged += Rbtn2_CheckedChanged;
+
+                rbtn3 = new RadioButton();
+                rbtn3.Checked = false;
+                rbtn3.Text = "DarkRed";
+                rbtn3.Location = new Point(150, 460);
+                rbtn3.CheckedChanged += Rbtn3_CheckedChanged;
+
+                Controls.Add(rbtn1);
+                Controls.Add(rbtn2);
+                Controls.Add(rbtn3);
+            }
+            else if (e.Node.Text == "Raadionupp1")
+            {
+                int x = 20;
+                for (int i = 0; i < rbtn_list.Count; i++)
+                {
+                    rbtn = new RadioButton();
+                    rbtn.Checked = false;
+                    rbtn.Text = rbtn_list[i];
+                    rbtn.Height = x;
+                    x = x + 20;
+                    rbtn.Location = new Point(150, btn.Height + lbl.Height + pbox.Height + chk1.Height + chk2.Height + rbtn.Height);
+                    rbtn.CheckedChanged += new EventHandler(Btn_CheckedChanged);
+
+                    Controls.Add(rbtn);
+                }
+            }
+            else if(e.Node.Text == "Tekstikast")
+            {
+                txt=new TextBox();
+                txt.Location = new Point(150 + btn.Width + 5, btn.Height);
+                txt.Font = new Font("Arial", 20);
+                txt.Width = 200;
+                txt.TextChanged += Txt_TextChanged;
+                Controls.Add(txt);
+            }
+        }
+
+        private void Txt_TextChanged(object? sender, EventArgs e)
+        {
+            lbl.Text = txt.Text;
+        }
+
+        private void Btn_CheckedChanged(object? sender, EventArgs e)
+        {
+            RadioButton rb = (RadioButton)sender;
+            lbl.Text = rb.Text;
+        }
+
+        private void Rbtn1_CheckedChanged(object? sender, EventArgs e)
+        {
+            rbtn1.Font = new Font("Brush Script MT", 15, FontStyle.Italic);
+            this.BackColor = Color.Bisque;
+        }
+
+        private void Rbtn2_CheckedChanged(object? sender, EventArgs e)
+        {
+            rbtn2.Font = new Font("Brush Script MT", 15, FontStyle.Italic);
+            this.BackColor = Color.Teal;
+
+        }
+
+        private void Rbtn3_CheckedChanged(object? sender, EventArgs e)
+        {
+            rbtn3.Font = new Font("Brush Script MT", 15, FontStyle.Italic);
+            this.BackColor = Color.DarkRed;
         }
 
         private void Chk1_CheckedChanged(object? sender, EventArgs e)
