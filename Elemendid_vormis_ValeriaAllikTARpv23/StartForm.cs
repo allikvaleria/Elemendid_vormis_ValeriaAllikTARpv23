@@ -1,8 +1,13 @@
-﻿namespace Elemendid_vormis_ValeriaAllikTARpv23
+﻿using Microsoft.VisualBasic;
+using System.Data;
+using System.Xml.Linq;
+
+namespace Elemendid_vormis_ValeriaAllikTARpv23
 {
     public partial class StartForm : Form
     {
-        List<string> elemendid = new List<string> { "Nupp", "Silt", "Pilt", "Märkruut", "Raadionupp", "Raadionupp1", "Tekstikast" };
+        List<string> elemendid = new List<string> 
+        { "Nupp", "Silt", "Pilt", "Märkruut", "Raadionupp", "Raadionupp1", "Tekstikast", "Loetelu", "Tabel", "Dialogi aknad" };
         List<string> rbtn_list = new List<string> { "Üks", "Kaks", "Kolm" };
         TreeView tree;
         Button btn;
@@ -11,6 +16,9 @@
         CheckBox chk1, chk2;
         RadioButton rbtn, rbtn1, rbtn2, rbtn3;
         TextBox txt;
+        ListBox lb;
+        DataSet ds;
+        DataGridView dg;
         public StartForm()
         {
             this.Height = 600;
@@ -184,10 +192,90 @@
             {
                 txt=new TextBox();
                 txt.Location = new Point(150 + btn.Width + 5, btn.Height);
-                txt.Font = new Font("Arial", 20);
+                txt.Font = new Font("Arial", 10);
                 txt.Width = 200;
                 txt.TextChanged += Txt_TextChanged;
                 Controls.Add(txt);
+            }
+            else if (e.Node.Text == "Loetelu")
+            {
+                lb = new ListBox();
+                foreach(string item in rbtn_list)
+                {
+                    lb.Items.Add(item);
+                }
+                lb.Height = 30;
+                lb.Location = new Point(160 + btn.Width + txt.Width, btn.Height);
+                lb.SelectedIndexChanged += Lb_SelectedIndexChanged;
+                Controls.Add(lb);
+            }
+            else if (e.Node.Text == "Tabel")
+            {
+                ds = new DataSet("XML file");
+                ds.ReadXml(@"..\..\..\menu.xml");
+                dg = new DataGridView();
+                dg.Location = new Point(155 + chk1.Width + 15, txt.Height + lbl.Height + 10);
+                dg.DataSource = ds;
+                dg.DataMember = "food";
+                dg.RowHeaderMouseClick += Dg_RowHeaderMouseClick;
+                Controls.Add(dg);
+            }
+            else if (e.Node.Text == "Dialogaknad")
+            {
+                MessageBox.Show("Dialoog", "See on lihtne aken");
+                var vastus = MessageBox.Show("Sisestame andmed", "Kas tahad InputBoxi kasutada?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (vastus == DialogResult.Yes)
+                {
+                    string text = Interaction.InputBox("Sisesta midagi siia", "andmete sisestamine"); MessageBox.Show("Oli sisestanud : " + text);
+                    Random random = new Random();
+                    DataRow dr = ds.Tables["food"].NewRow();
+                    dr["name"] = text;
+                    dr["price"] = "$" + (random.NextSingle() * 10).ToString();
+                    dr["description"] = "Väga maitsev ";
+                    dr["calories"] = random.Next(10, 100);
+
+                    ds.Tables["food"].Rows.Add(dr);
+                    if (ds == null) { return; }
+                    ds.WriteXml(@"..\..\..\menu.xml");
+                    MessageBox.Show("Oli sisestatud" + text);
+                }
+                //minu var
+                //MessageBox.Show("Dialoog", "See on lihtne aken");
+                //var vastus = MessageBox.Show("Sisestame andmed", "Kas tahad InputBoxi kasutada?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                //if (vastus == DialogResult.Yes)
+                //{
+                //    string nimi = Interaction.InputBox("Toidu nimi");
+                //    string hind = Interaction.InputBox("Hind");
+                //    string kirjeldus = Interaction.InputBox("Kirjeldus");
+                //    string kalorid = Interaction.InputBox("Kalorid");
+
+                //    var xdoc = XDocument.Load("menu.xml");
+                //    xdoc.Element("menu").Add(new XElement("food",
+                //        new XElement("nimi", nimi),
+                //        new XElement("hind", hind),
+                //        new XElement("kirjeldus", kirjeldus),
+                //        new XElement("kalorid", kalorid)
+                //    ));
+
+                //    ds.WriteXml(@"..\..\..\menu.xml");
+                //    MessageBox.Show("Toit lisatud: " + nimi);
+                //}
+            }
+        }
+        
+
+        private void Dg_RowHeaderMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
+        {
+            txt.Text=dg.Rows[e.RowIndex].Cells[0].Value.ToString()+ " hind " + dg.Rows[e.RowIndex].Cells[1].Value.ToString();
+        }
+
+        private void Lb_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            switch (lb.SelectedIndex)
+            {
+                case 0:tree.BackColor = Color.Sienna; break;
+                case 1:tree.BackColor = Color.Silver; break;
+                case 2:tree.BackColor = Color.SlateBlue; break;
             }
         }
 
