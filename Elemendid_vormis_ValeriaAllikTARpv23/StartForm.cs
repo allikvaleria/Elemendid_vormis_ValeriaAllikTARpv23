@@ -7,10 +7,10 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
     public partial class StartForm : Form
     {
         List<string> elemendid = new List<string> 
-        { "Nupp", "Silt", "Pilt", "Märkruut", "Raadionupp", "Raadionupp1", "Tekstikast", "Loetelu", "Tabel", "Dialogi aknad" };
+        { "Nupp", "Silt", "Pilt", "Märkruut", "Raadionupp", "Raadionupp1", "Tekstikast", "Loetelu", "Tabel", "Dialogi aknad", "Tutorial I", "Tutorial II", "Tutorial III"};
         List<string> rbtn_list = new List<string> { "Üks", "Kaks", "Kolm" };
         TreeView tree;
-        Button btn;
+        Button btn, btn2, btn3, btn4;
         Label lbl;
         PictureBox pbox, pbox2;
         CheckBox chk1, chk2;
@@ -21,8 +21,8 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
         DataGridView dg;
         public StartForm()
         {
-            this.Height = 600;
-            this.Width = 800;
+            this.Height = 800;
+            this.Width = 1000;
             this.Text = "Vorm elementidega";
             tree = new TreeView();
             tree.Dock = DockStyle.Left;
@@ -35,7 +35,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
             tree.Nodes.Add(tn);
             this.Controls.Add(tree);
-            //nupp
+            //nupp 
             btn = new Button();
             btn.Text = "Vajuta siia";
             btn.Height = 50;
@@ -43,8 +43,32 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             btn.Location = new Point(150, 50);
             btn.Click += Btn_Click;
 
+            //nupp TeineVorm
+            btn2 = new Button();
+            btn2.Text = "Picture Viewer";
+            btn2.Height = 50;
+            btn2.Width = 70;
+            btn2.Location = new Point(700, 50);
+            btn2.Click += Btn2_Click;
+
+            //nupp KolmasVorm
+            btn3 = new Button();
+            btn3.Text = "Math quiz";
+            btn3.Height = 50;
+            btn3.Width = 70;
+            btn3.Location = new Point(700, 100);
+            btn3.Click += Btn3_Click;
+
+            //nupp NeljasVorm
+            btn4 = new Button();
+            btn4.Text = "Matching Game";
+            btn4.Height = 50;
+            btn4.Width = 70;
+            btn4.Location = new Point(700, 150);
+            btn4.Click += Btn4_Click;
+
             //silt-label
-            lbl= new Label();
+            lbl = new Label();
             lbl.Text = "Aknade elemendid c# abil";
             lbl.Font = new Font("Arial", 30, FontStyle.Italic);
             lbl.Size = new Size(550, 50);
@@ -61,6 +85,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             pbox.DoubleClick += Pbox_DoubleClick;
 
         }
+
         int tt = 0;
         private void Pbox_DoubleClick(object? sender, EventArgs e)
         {
@@ -97,8 +122,29 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             {
                 btn.BackColor = Color.Lavender;
             }
+            
         }
 
+        private void Btn2_Click(object? sender, EventArgs e)
+        {
+            btn2.BackColor = Color.Red;
+            TeineVorm teineVorm = new TeineVorm(700, 700);
+            teineVorm.Show();
+        }
+
+        private void Btn3_Click(object? sender, EventArgs e)
+        {
+            btn3.BackColor = Color.OrangeRed;
+            KolmasVorm kolmasVorm = new KolmasVorm(700, 700);
+            kolmasVorm.Show();
+        }
+
+        private void Btn4_Click(object? sender, EventArgs e)
+        {
+            btn4.BackColor = Color.Yellow; 
+            NeljasVorm neljasVorm = new NeljasVorm(700, 700);
+            neljasVorm.Show();
+        }
 
         private void Tree_AfterSelect(object? sender, TreeViewEventArgs e)
         {
@@ -260,6 +306,18 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
                 //    ds.WriteXml(@"..\..\..\menu.xml");
                 //    MessageBox.Show("Toit lisatud: " + nimi);
                 //}
+            }
+            else if (e.Node.Text== "Tutorial I")
+            {
+                Controls.Add(btn2);
+            }
+            else if(e.Node.Text == "Tutorial II")
+            {
+                Controls.Add(btn3);
+            }
+            else if(e.Node.Text == "Tutorial III")
+            {
+                Controls.Add(btn4);
             }
         }
         
