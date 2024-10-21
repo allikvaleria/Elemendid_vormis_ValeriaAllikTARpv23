@@ -15,16 +15,18 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
     {
         TableLayoutPanel tbl;
 
-        Button btn, btn2, btn3, btn4, btn5, btn6, btn7;
+        Button btn, btn2, btn3, btn4, btn5, btn6, btn7, btn8;
 
       
 
         FlowLayoutPanel flp;
-        PictureBox pictureBox1;
+        PictureBox pictureBox1, zoomPbox;
         ColorDialog colorDialog1;
         OpenFileDialog openFileDialog1;
         CheckBox chk;
         Image img;
+
+        
 
         public TeineVorm(int w, int h)
         {
@@ -34,15 +36,12 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             tbl = new TableLayoutPanel();
             tbl.Dock = DockStyle.Fill;
 
-            InitializeComponent(); //for zoom
-
             //PictureBox
             pictureBox1 = new PictureBox();
             pictureBox1.Dock = DockStyle.Fill;
             pictureBox1.BorderStyle = BorderStyle.Fixed3D;
             tbl.Controls.Add(pictureBox1);
             tbl.SetColumnSpan(pictureBox1, 2);
-
 
             //Checkbox
             chk = new CheckBox();
@@ -82,20 +81,28 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
             //Button 'MustValge'
             btn5 = new Button();
-            btn5.Text = "Must - Valge";
+            btn5.Text = "Black - White";
             btn5.AutoSize = true;
             btn5.Click += Btn5_Click;
 
             //Button 'Pilte pööramine'
             btn6 = new Button();
-            btn6.Text = "Pilte pööramine";
+            btn6.Text = "Rotate image";
             btn6.AutoSize = true;
             btn6.Click += Btn6_Click;
 
+            //Button 'Save a picture'
             btn7 = new Button();
-            btn7.Text = "Zoom";
+            btn7.Text = "Save a picture";
             btn7.AutoSize = true;
             btn7.Click += Btn7_Click;
+
+            //Button 'Picture blur'
+            btn8 = new Button();
+            btn8.Text = "Image distortion";
+            btn8.AutoSize = true;
+            btn8.Click += Btn8_Click;
+
 
 
             //controls add
@@ -106,6 +113,8 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             flp.Controls.Add(btn4);
             flp.Controls.Add(btn5);
             flp.Controls.Add(btn6);
+            flp.Controls.Add(btn7);
+            flp.Controls.Add(btn8);
 
             //Proportsioonide paigaldamine Row'le ja Columnile
             tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15));
@@ -129,18 +138,53 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
         }
 
+        private void Btn8_Click(object? sender, EventArgs e)
+        {
+            if (pictureBox1.Image == null) return;
 
-        //Buttom zoom
+            Bitmap original = new Bitmap(pictureBox1.Image);
+            Bitmap distorted = new Bitmap(original.Width, original.Height);
+
+            for (int x = 0; x < original.Width; x++)
+            {
+                for (int y = 0; y < original.Height; y++)
+                {
+                    // Применяем искажение
+                    int offsetY = (int)(10 * Math.Sin(2 * Math.PI * x / 30)); // Параметры искажения
+                    int newY = y + offsetY;
+
+                    // Проверяем границы
+                    if (newY >= 0 && newY < original.Height)
+                    {
+                        distorted.SetPixel(x, newY, original.GetPixel(x, y));
+                    }
+                    else
+                    {
+                        distorted.SetPixel(x, y, original.GetPixel(x, y)); // Оставляем без изменений
+                    }
+                }
+            }
+
+            pictureBox1.Image = distorted;
+            pictureBox1.Invalidate();
+        }
+
+
         private void Btn7_Click(object? sender, EventArgs e)
         {
-            Bitmap pilt = new Bitmap(pictureBox1.Image);
-            Bitmap zoom = new Bitmap(pilt, img.Width + (img.Width * pilt.Width / 100), img.Height + (img.Height * pilt.Height / 100));
-            Graphics g = Graphics.FromImage(zoom);
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "JPEG Files (*.jpg)|*.jpg|PNG Files (*.png)|*.png|BMP Files (*.bmp)|*.bmp|All files (*.*)|*.*"; 
+                sfd.Title = "Save img";
 
-            
-            
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    // Pildi salvestamine PNG-vormingus
+                    pictureBox1.Image.Save(sfd.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                }
+            }
         }
+
 
         //Button pööramine
 

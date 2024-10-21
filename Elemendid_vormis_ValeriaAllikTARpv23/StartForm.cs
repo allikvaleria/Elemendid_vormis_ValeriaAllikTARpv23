@@ -128,7 +128,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
         private void Btn2_Click(object? sender, EventArgs e)
         {
             btn2.BackColor = Color.LavenderBlush;
-            TeineVorm teineVorm = new TeineVorm(800, 900);
+            TeineVorm teineVorm = new TeineVorm(1000, 1100);
             teineVorm.Show();
         }
 

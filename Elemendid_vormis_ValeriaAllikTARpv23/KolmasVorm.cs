@@ -21,7 +21,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
         FlowLayoutPanel flp;
         NumericUpDown sum, difference, product, quotient;
 
-        Button startButton, teemaValik, giveUp;
+        Button startButton, teemaValik, giveUp, timer20;
 
 
 
@@ -210,9 +210,19 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             startButton.TabIndex = 0;
             startButton.Click += StartButton_Click;
 
+            timer20 = new Button();
+            timer20.Text = "Timer 20sek";
+            timer20.Font = new Font("Harlow Solid Italic", 14);
+            timer20.BackColor = Color.LightGreen;
+            timer20.AutoSize = true;
+            timer20.Location = new Point(200, 295);
+            timer20.TabIndex = 0;
+            timer20.Click += Timer20_Click;
+
+
             //nupp teema valik (värv)
             teemaValik = new Button();
-            teemaValik.Text = "Vali teema";
+            teemaValik.Text = "Choose a color theme";
             teemaValik.Font = new Font("Harlow Solid Italic", 14);
 
             teemaValik.BackColor = Color.LemonChiffon;
@@ -248,6 +258,11 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             this.Controls.Add(timelabel);
         }
 
+        private void Timer20_Click(object? sender, EventArgs e)
+        {
+            timeLeft = 20;
+            timelabel.Text = "Time left 20 seconds";
+        }
 
         private void GiveUp_Click(object? sender, EventArgs e)
         {
