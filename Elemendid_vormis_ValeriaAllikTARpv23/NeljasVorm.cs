@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Elemendid_vormis_ValeriaAllikTARpv23
 {
@@ -13,11 +14,15 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             "b", "b", "v", "v", "w", "w", "z", "z"
         };
         TableLayoutPanel tlp;
-        Label firstClicked, secondClicked, timerLabel;
+        Label firstClicked, secondClicked, timerLabel, scoreLabel;
         Random random = new Random();
         System.Windows.Forms.Timer timer1;
         System.Windows.Forms.Timer countdownTimer;
-        int timeLeft = 60; 
+        Button btnPause, btnStart;
+        RadioButton easy, medium, hard;
+
+        int timeLeft = 60;
+        int score = 0;
 
         public NeljasVorm(int w, int h)
         {
@@ -26,26 +31,34 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             this.Text = "Matching Game";
 
             // Timer label
-            timerLabel = new Label
-            {
-                Dock = DockStyle.Top,
-                Font = new Font("Arial", 16, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter,
-                Text = $"Time Left: {timeLeft} seconds"
-            };
+            timerLabel = new Label();
+            timerLabel.Dock = DockStyle.Top;
+            timerLabel.Font = new Font("Arial", 16, FontStyle.Bold);
+            timerLabel.TextAlign = ContentAlignment.MiddleCenter;
+            timerLabel.Text = $"Time Left: {timeLeft} seconds";
+            timerLabel.Height = 40; 
             this.Controls.Add(timerLabel);
 
-            // TableLayoutPanel
-            tlp = new TableLayoutPanel
-            {
-                BackColor = Color.CornflowerBlue,
-                Dock = DockStyle.Fill,
-                CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset,
-                ColumnCount = 4,
-                RowCount = 4
-            };
+            //score
+            scoreLabel = new Label();
+            scoreLabel.Dock = DockStyle.Top;
+            scoreLabel.Font = new Font("Arial", 16, FontStyle.Bold);
+            scoreLabel.TextAlign = ContentAlignment.MiddleCenter;
+            scoreLabel.Text = $"Score: {score}";
+            scoreLabel.Height = 40;
+            this.Controls.Add(scoreLabel);
 
-            // Proportsioonide paigaldamine Row'le ja Columnile
+            // TableLayoutPanel
+            tlp = new TableLayoutPanel();
+            tlp.BackColor = Color.CornflowerBlue;
+            tlp.Dock = DockStyle.Top;
+            tlp.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset;
+            tlp.ColumnCount = 4;
+            tlp.RowCount = 4;
+            tlp.Height = 400;
+            
+
+            // Пропорции для Row и Column
             for (int i = 0; i < tlp.ColumnCount; i++)
             {
                 tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25));
@@ -66,17 +79,19 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
                     Label lbl = new Label
                     {
                         BackColor = Color.CornflowerBlue,
-                        AutoSize = false,
-                        Dock = DockStyle.Fill,
+                        AutoSize = false, 
+                        Size = new Size(80, 80), 
+                        Margin = new Padding(10), 
                         TextAlign = ContentAlignment.MiddleCenter,
                         Font = new Font("Webdings", 48, FontStyle.Bold),
-                        Text = "c" // Initial placeholder
+                        Text = "c" // Placeholder
                     };
 
-                    tlp.Controls.Add(lbl, col, row);
                     lbl.Click += Lbl_Click;
+                    tlp.Controls.Add(lbl, col, row);
                 }
             }
+
 
             // Timer 
             timer1 = new System.Windows.Forms.Timer
@@ -87,13 +102,108 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
             countdownTimer = new System.Windows.Forms.Timer
             {
-                Interval = 1000 
+                Interval = 1000
             };
             countdownTimer.Tick += CountdownTimer_Tick;
-            countdownTimer.Start(); 
 
             AssignIconsToSquares();
+
+            //button pause
+            btnPause = new Button();
+            btnPause.Text = "Pause";
+            btnPause.AutoSize = true;
+            btnPause.Location = new Point(100, 650);
+            btnPause.Click += BtnPause_Click;
+            this.Controls.Add(btnPause);
+
+            // Button start 
+            btnStart = new Button();
+            btnStart.Text = "Start Game";
+            btnStart.Location = new Point(0, 650);
+            btnStart.AutoSize = true;
+            btnStart.Click += BtnStart_Click;
+            this.Controls.Add(btnStart);
+
+            //
+            easy = new RadioButton();
+            easy.Text = "Easy";
+            easy.Location = new Point(200, 650);
+            easy.CheckedChanged += Easy_CheckedChanged;
+            this.Controls.Add(easy);
+
+            //
+            medium = new RadioButton();
+            medium.Text = "Medium";
+            medium.Location = new Point(320, 650);
+            medium.CheckedChanged += Medium_CheckedChanged;
+            this.Controls.Add(medium);
+
+            //
+            hard = new RadioButton();
+            hard.Text = "Hard";
+            hard.Location = new Point(440, 650);
+            hard.CheckedChanged += Hard_CheckedChanged;
+            this.Controls.Add(hard);
         }
+
+        private void BtnStart_Click(object? sender, EventArgs e)
+        {
+            if (!easy.Checked && !medium.Checked && !hard.Checked)
+            {
+                MessageBox.Show("Please select a difficulty level before starting the game.", "Select Difficulty");
+                return;
+            }
+
+            AssignIconsToSquares();
+            countdownTimer.Start();
+        }
+
+        private void Hard_CheckedChanged(object? sender, EventArgs e)
+        {
+            if (hard.Checked)
+            {
+                timeLeft = 30; 
+                timerLabel.Text = $"Time Left: {timeLeft} seconds";
+                countdownTimer.Start();
+            }
+        }
+
+        private void Medium_CheckedChanged(object? sender, EventArgs e)
+        {
+            if (medium.Checked)
+            {
+                timeLeft = 60; 
+                timerLabel.Text = $"Time Left: {timeLeft} seconds";
+                countdownTimer.Start();
+            }
+        }
+
+        private void Easy_CheckedChanged(object? sender, EventArgs e)
+        {
+            if (easy.Checked)
+            {
+                timeLeft = 120; 
+                timerLabel.Text = $"Time Left: {timeLeft} seconds";
+                countdownTimer.Start();
+            }
+        }
+
+        private void BtnPause_Click(object? sender, EventArgs e)
+        {
+            if (countdownTimer.Enabled)
+            {
+                countdownTimer.Stop();
+                timer1.Stop();
+                btnPause.Text = "Resume";
+            }
+            else
+            {
+                countdownTimer.Start();
+                btnPause.Text = "Pause";
+            }
+        }
+
+
 
         private void CountdownTimer_Tick(object? sender, EventArgs e)
         {
@@ -141,6 +251,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
                 if (firstClicked.Text == secondClicked.Text)
                 {
+                    UpdateScore(10); 
                     firstClicked = null;
                     secondClicked = null;
                     CheckForWinner();
@@ -149,6 +260,12 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
                 timer1.Start();
             }
+        }
+
+        private void UpdateScore(int points)
+        {
+            score += points; 
+            scoreLabel.Text = $"Score: {score}"; 
         }
 
         private void CheckForWinner()
@@ -161,7 +278,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
                     return;
             }
 
-            MessageBox.Show("You matched all the icons!", "Congratulations");
+            MessageBox.Show($"You matched all the icons! Your score: {score}", "Congratulations");
             Close();
         }
 
