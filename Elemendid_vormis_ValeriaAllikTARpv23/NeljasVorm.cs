@@ -13,6 +13,16 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             "!", "!", "N", "N", ",", ",", "k", "k",
             "b", "b", "v", "v", "w", "w", "z", "z"
         };
+        List<string> icons2 = new List<string>()
+        {
+            "&", "&", "@", "@", "$", "$", "g", "g",
+            "a", "a", "c", "c", "p", "p", "o", "o"
+        };
+        List<string> icons3 = new List<string>()
+        {
+            "#", "#", "u", "u", "*", "*", "¤", "¤",
+            "l", "l", "q", "q", "s", "s", "m", "m"
+        };
         TableLayoutPanel tlp;
         Label firstClicked, secondClicked, timerLabel, scoreLabel;
         Random random = new Random();
@@ -36,7 +46,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             timerLabel.Font = new Font("Arial", 16, FontStyle.Bold);
             timerLabel.TextAlign = ContentAlignment.MiddleCenter;
             timerLabel.Text = $"Time Left: {timeLeft} seconds";
-            timerLabel.Height = 40; 
+            timerLabel.Height = 40;
             this.Controls.Add(timerLabel);
 
             //score
@@ -56,7 +66,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             tlp.ColumnCount = 4;
             tlp.RowCount = 4;
             tlp.Height = 400;
-            
+
 
             // Пропорции для Row и Column
             for (int i = 0; i < tlp.ColumnCount; i++)
@@ -79,9 +89,9 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
                     Label lbl = new Label
                     {
                         BackColor = Color.CornflowerBlue,
-                        AutoSize = false, 
-                        Size = new Size(80, 80), 
-                        Margin = new Padding(10), 
+                        AutoSize = false,
+                        Size = new Size(80, 80),
+                        Margin = new Padding(10),
                         TextAlign = ContentAlignment.MiddleCenter,
                         Font = new Font("Webdings", 48, FontStyle.Bold),
                         Text = "c" // Placeholder
@@ -162,8 +172,9 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
         {
             if (hard.Checked)
             {
-                timeLeft = 30; 
+                timeLeft = 30;
                 timerLabel.Text = $"Time Left: {timeLeft} seconds";
+                AssignIcons3ToSquares();
                 countdownTimer.Start();
             }
         }
@@ -172,8 +183,9 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
         {
             if (medium.Checked)
             {
-                timeLeft = 60; 
+                timeLeft = 60;
                 timerLabel.Text = $"Time Left: {timeLeft} seconds";
+                AssignIcons2ToSquares();
                 countdownTimer.Start();
             }
         }
@@ -182,7 +194,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
         {
             if (easy.Checked)
             {
-                timeLeft = 120; 
+                timeLeft = 120;
                 timerLabel.Text = $"Time Left: {timeLeft} seconds";
                 countdownTimer.Start();
             }
@@ -251,7 +263,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
                 if (firstClicked.Text == secondClicked.Text)
                 {
-                    UpdateScore(10); 
+                    UpdateScore(10);
                     firstClicked = null;
                     secondClicked = null;
                     CheckForWinner();
@@ -264,8 +276,8 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
         private void UpdateScore(int points)
         {
-            score += points; 
-            scoreLabel.Text = $"Score: {score}"; 
+            score += points;
+            scoreLabel.Text = $"Score: {score}";
         }
 
         private void CheckForWinner()
@@ -280,6 +292,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
             MessageBox.Show($"You matched all the icons! Your score: {score}", "Congratulations");
             Close();
+            timer1.Stop();
         }
 
         private void AssignIconsToSquares()
@@ -293,6 +306,35 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
                     iconLabel.Text = icons[randomNumber];
                     iconLabel.ForeColor = iconLabel.BackColor;
                     icons.RemoveAt(randomNumber);
+                }
+            }
+        }
+
+        private void AssignIcons2ToSquares()
+        {
+            foreach (Control control in tlp.Controls)
+            {
+                Label iconLabel = control as Label;
+                if (iconLabel != null)
+                {
+                    int randomNumber = random.Next(icons2.Count);
+                    iconLabel.Text = icons2[randomNumber];
+                    iconLabel.ForeColor = iconLabel.BackColor;
+                    icons2.RemoveAt(randomNumber);
+                }
+            }
+        }
+        private void AssignIcons3ToSquares()
+        {
+            foreach (Control control in tlp.Controls)
+            {
+                Label iconLabel = control as Label;
+                if (iconLabel != null)
+                {
+                    int randomNumber = random.Next(icons3.Count);
+                    iconLabel.Text = icons3[randomNumber];
+                    iconLabel.ForeColor = iconLabel.BackColor;
+                    icons3.RemoveAt(randomNumber);
                 }
             }
         }
