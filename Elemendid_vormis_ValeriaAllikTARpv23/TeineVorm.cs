@@ -20,7 +20,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
       
 
         FlowLayoutPanel flp;
-        PictureBox pictureBox1, zoomPbox;
+        PictureBox pictureBox1;
         ColorDialog colorDialog1;
         OpenFileDialog openFileDialog1;
         CheckBox chk;
