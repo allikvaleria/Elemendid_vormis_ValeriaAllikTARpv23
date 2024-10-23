@@ -21,7 +21,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
         FlowLayoutPanel flp;
         NumericUpDown sum, difference, product, quotient;
 
-        Button startButton, teemaValik, giveUp, timer20;
+        Button startButton, teemaValik, giveUp, timer20, hintButton, closeButton;
 
 
 
@@ -206,16 +206,16 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             startButton.Font = new Font("Harlow Solid Italic", 14);
             startButton.BackColor = Color.LightGreen;
             startButton.AutoSize = true;
-            startButton.Location = new Point(200, 295);
+            startButton.Location = new Point(0, 50);
             startButton.TabIndex = 0;
             startButton.Click += StartButton_Click;
 
             timer20 = new Button();
             timer20.Text = "Timer 20sek";
             timer20.Font = new Font("Harlow Solid Italic", 14);
-            timer20.BackColor = Color.LightGreen;
+            timer20.BackColor = Color.LightSeaGreen;
             timer20.AutoSize = true;
-            timer20.Location = new Point(200, 295);
+            timer20.Location = new Point(0, 100);
             timer20.TabIndex = 0;
             timer20.Click += Timer20_Click;
 
@@ -227,8 +227,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
             teemaValik.BackColor = Color.LemonChiffon;
             teemaValik.AutoSize = true;
-            teemaValik.Location = new Point(400, 295);
-            teemaValik.TabIndex = 0;
+            teemaValik.Location = new Point(400, 300);
             teemaValik.Click += TeemaValik_Click;
 
             //nupp giveUp
@@ -237,25 +236,57 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             giveUp.Font = new Font("Harlow Solid Italic", 14);
             giveUp.BackColor = Color.LightCoral;
             giveUp.AutoSize = true;
-            giveUp.Location = new Point(600, 295);
-            giveUp.TabIndex = 0;
+            giveUp.Location = new Point(0, 150);
             giveUp.Click += GiveUp_Click;
 
-            
+            //nupp hint
+            hintButton=new Button();
+            hintButton.Text = "Hint";
+            hintButton.Font = new Font("Harlow Solid Italic", 14);
+            hintButton.BackColor = Color.CadetBlue;
+            hintButton.AutoSize = true;
+            hintButton.Location = new Point(0, 200);
+            hintButton.Click += HintButton_Click;
 
+            //nupp close
+            closeButton=new Button();
+            closeButton.Text = "Close";
+            closeButton.Font = new Font("Harlow Solid Italic", 14);
+            closeButton.BackColor = Color.MediumOrchid;
+            closeButton.AutoSize = true;
+            closeButton.Location = new Point(0, 250);
+            closeButton.Click += CloseButton_Click;
 
             //Timer
             timer1 = new System.Windows.Forms.Timer();
             timer1.Interval = 1000;
             timer1.Tick += new EventHandler(timer1_Tick);
 
+            this.Controls.Add(timer20);
+            this.Controls.Add(hintButton);
             this.Controls.Add(startButton);
+            this.Controls.Add(closeButton);
             this.Controls.Add(teemaValik);
-
             this.Controls.Add(giveUp);
-
             this.Controls.Add(flp);
             this.Controls.Add(timelabel);
+        }
+
+        private void CloseButton_Click(object? sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void HintButton_Click(object? sender, EventArgs e)
+        {
+            string hintMessage = "Here are your hints:\n";
+
+            hintMessage += "Sum Hint : " + (addend1 + addend2);
+            hintMessage += "\nDifference Hint : " + (minuend - subtrahend);
+            hintMessage += "\nProduct Hint : " + (multiplicand * multiplier);
+            hintMessage += "\nQuotient Hint : " + (dividend / divisor);
+
+            MessageBox.Show(hintMessage, "Hints");
         }
 
         private void Timer20_Click(object? sender, EventArgs e)
@@ -319,17 +350,10 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
                 else if (ValudTeema == "Kollane")
                 {
                     this.BackColor = Color.LightYellow;
-
-                    this.BackColor = Color.HotPink;
-                }
-                else if (ValudTeema == "Kollane")
-                {
-                    this.BackColor = Color.Yellow;
-
                 }
                 else
                 {
-                    this.BackColor = Color.Red; // Fallback color
+                    this.BackColor = Color.White; // Fallback color
                 }
             }
         }
@@ -423,20 +447,22 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
             plusLeftLabel.Text = addend1.ToString();
             plusRightLabel.Text = addend2.ToString();
-
             sum.Value = 0;
+            sum.BackColor = Color.White;
 
             minuend = randomizer.Next(1, 101);
             subtrahend = randomizer.Next(1, minuend);
             minusLeftLabel.Text = minuend.ToString();
             minusRightLabel.Text = subtrahend.ToString();
             difference.Value = 0;
+            difference.BackColor = Color.White;
 
             multiplicand = randomizer.Next(2, 11);
             multiplier = randomizer.Next(2, 11);
             timesLeftLabel.Text = multiplicand.ToString();
             timesRightLabel.Text = multiplier.ToString();
             product.Value = 0;
+            product.BackColor = Color.White;
 
             divisor = randomizer.Next(2, 11);
             int temporaryQuotient = randomizer.Next(2, 11);
@@ -444,6 +470,7 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
             dividedLeftLabel.Text = dividend.ToString();
             dividedRightLabel.Text = divisor.ToString();
             quotient.Value = 0;
+            quotient.BackColor = Color.White;
 
             // Start the timer.
             timeLeft = 60;
@@ -453,13 +480,42 @@ namespace Elemendid_vormis_ValeriaAllikTARpv23
 
         private bool CheckTheAnswer()
         {
-            if ((addend1 + addend2 == sum.Value)
-                && (minuend - subtrahend == difference.Value)
-                && (multiplicand * multiplier == product.Value)
-                && (dividend / divisor == quotient.Value))
-                return true;
+            bool allCorrect = true;
+
+            if (addend1 + addend2 == sum.Value)
+                sum.BackColor = Color.LightGreen;
             else
-                return false;
+            {
+                sum.BackColor = Color.White;
+                allCorrect = false;
+            }
+
+            if (minuend - subtrahend == difference.Value)
+                difference.BackColor = Color.LightGreen;
+            else
+            {
+                difference.BackColor = Color.White;
+                allCorrect = false;
+            }
+
+            if (multiplicand * multiplier == product.Value)
+                product.BackColor = Color.LightGreen;
+            else
+            {
+                product.BackColor = Color.White;
+                allCorrect = false;
+            }
+
+            if (dividend / divisor == quotient.Value)
+                quotient.BackColor = Color.LightGreen;
+            else
+            {
+                quotient.BackColor = Color.White;
+                allCorrect = false;
+            }
+
+            return allCorrect;
         }
     }
 }
+
